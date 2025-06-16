@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title> Daroul Argam ventes de Matériaux de construction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Matériaux Daroul</h1>
+    <p class="slogan">Construisez l’avenir avec nous</p>
+  </header>
+
+  <nav>
+    <a href="#accueil">Accueil</a>
+    <a href="#produits">Produits</a>
+    <a href="#panier">Panier</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="container">
+    <section id="accueil">
+      <h2>Bienvenue sur Matériaux Daroul</h2>
+      <p>
+        Votre quincaillerie en ligne spécialisée dans les matériaux de
+        construction : ciment, fer, outillage, plomberie, et bien plus encore.
+      </p>
+    </section>
+
+    <section id="produits">
+      <h2>Nos Produits</h2>
+      <div class="products">
+        <div class="product">
+          <h3>Ciment 50kg</h3>
+          <p>6 500 FCFA</p>
+          <button>Ajouter au panier</button>
+        </div>
+        <div class="product">
+          <h3>Fer à béton 8mm</h3>
+          <p>3 000 FCFA</p>
+          <button>Ajouter au panier</button>
+        </div>
+        <div class="product">
+          <h3>Peinture blanche 20L</h3>
+          <p>18 000 FCFA</p>
+          <button>Ajouter au panier</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="panier">
+      <h2>Panier</h2>
+      <p>Votre panier est vide.</p>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <form>
+        <input type="text" name="nom" placeholder="Votre nom" required />
+        <input type="email" name="email" placeholder="Votre email" required />
+        <textarea name="message" placeholder="Votre message"></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p>Adresse : Daroul Argam, Matam</p>
+      <p>Téléphone : +221 77 871 74 09</p>
+      <p>Email : contact@materiauxdaroul.sn</p>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Matériaux Daroul - Quincaillerie moderne du Sénégal</p>
+  </footer>
+
+  <script>
+    const panier = {};
+
+    function ajouterAuPanier(nom, prix) {
+      if (panier[nom]) {
+        panier[nom].quantite++;
+      } else {
+        panier[nom] = { prix: prix, quantite: 1 };
+      }
+      afficherPanier();
+    }
+
+    function retirerDuPanier(nom) {
+      if (panier[nom]) {
+        panier[nom].quantite--;
+        if (panier[nom].quantite <= 0) {
+          delete panier[nom];
+        }
+        afficherPanier();
+      }
+    }
+
+    function afficherPanier() {
+      const panierSection = document.getElementById("panier");
+      let html = "<h2>Panier</h2>";
+
+      if (Object.keys(panier).length === 0) {
+        html += "<p>Votre panier est vide.</p>";
+      } else {
+        html += "<ul>";
+        let total = 0;
+        for (const produit in panier) {
+          const item = panier[produit];
+          const sousTotal = item.prix * item.quantite;
+          total += sousTotal;
+          html += `<li>
+            ${produit} - ${item.quantite} x ${item.prix} FCFA = ${sousTotal} FCFA
+            <button onclick="ajouterAuPanier('${produit}', ${item.prix})">+</button>
+            <button onclick="retirerDuPanier('${produit}')">-</button>
+          </li>`;
+        }
+        html += `</ul><strong>Total : ${total} FCFA</strong>`;
+        html += `<br><button onclick="viderPanier()">Vider le panier</button>`;
+      }
+      panierSection.innerHTML = html;
+    }
+
+    function viderPanier() {
+      for (const produit in panier) {
+        delete panier[produit];
+      }
+      afficherPanier();
+    }
+
+    document.querySelectorAll(".product button").forEach(button => {
+      button.addEventListener("click", () => {
+        const produit = button.parentElement.querySelector("h3").textContent;
+        const prixTexte = button.parentElement.querySelector("p").textContent;
+        const prix = parseInt(prixTexte.replace(/[^0-9]/g, ""));
+        ajouterAuPanier(produit, prix);
+      });
+    });
+
+    afficherPanier();
+  </script>
+</body>
+</html>
